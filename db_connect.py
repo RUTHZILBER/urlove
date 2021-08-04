@@ -2,10 +2,30 @@ from pymongo import MongoClient
 import certifi
 from random import randint
 from pprint import pprint
+from short_url import *
 
 
+def search_url(db,address='https://google.com'):
+    found_url=db.translate.find_one({'source_url':address},{'exchanged_url':1,'_id':0})
+    #check the value, False if not there...
+    if found_url==False:
+        return None
+    else:
+        return found_url
+def get_address(address='https://google.com'):
+    db=connect_to_db()
+    short_url=search_url(db,address)
+    if short_url==None:
+        url_struct = split_call_ganrate_url(address)  # (new, parameters, past_address without parameters)
+        insert_to_db(db, url_struct[2], url_struct[0])
+        if url_struct[1] != None:
+            return str(url_struct[0] + url_struct[1])
+        else:
+            return url_struct[0]
+    else:
+        return short_url+'?sdflkl'
 
-def insert_to_db(db, table_name, sourse_urls, exchanged_urls):
+def insert_to_db(db, sourse_urls, exchanged_urls, table_name='translate'):
     for i in range(4):
         address = {
             'source_url': sourse_urls[i],
@@ -20,7 +40,6 @@ def insert_to_db(db, table_name, sourse_urls, exchanged_urls):
         # print(result.inserted_id)
 def connect_to_db(mongodb_str_access='mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'):
     link=mongodb_str_access
-
 # link = 'mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/DBCLUSTER?retryWrites=true&w=majority'
 # link_sorurce='mongodb+srv://RuthZilber:0548593223@cluster0.2izn1.mongodb.net/Cluster0?retryWrites=true&w=majority'
     ca = certifi.where()
@@ -51,12 +70,8 @@ if __name__=='__main__':
     ]
     table_name='translate'
     insert_to_db(db, table_name, sourse_urls, exchanged_urls)
-
-
 #fivestarcount = db.reviews.find({'rating': 5}).count()
 #print(fivestarcount)
-
-
 # # Step 2: Create sample data
 # names = ['Kitchen', 'Animal', 'State', 'Tastey', 'Big', 'City', 'Fish', 'Pizza', 'Goat', 'Salty', 'Sandwich', 'Lazy',
 #          'Fun']
@@ -107,4 +122,4 @@ if __name__=='__main__':
 #
 #
 else:
-    print('sorry, I\'m too tired')
+    print('sorry, you didn\'t call me from main')

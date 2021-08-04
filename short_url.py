@@ -2,22 +2,12 @@ import string
 import math
 import random
 import re
-def is_valid_url(url_address):
+import re
 
-    regex = re.compile(
-        r'^(?:http|ftp)s?://'  # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
-        r'localhost|'  # localhost...
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-        r'(?::\d+)?'  # optional port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-    try:
-        is_valid=re.match(regex,url_address) is not None
-    except:
-        print('wrong')
-    return is_valid
+def split_to_parameters(url_address):
+    pass
 
-def split_protocol_dns_query(url_address):
+def split_call_ganrate_url(url_address):
     protocol=re.split('://',url_address,1)
     protocol[0]=protocol[0]+'://'
     # protocol is : ['https://','github.com/racehli?87']
@@ -28,23 +18,25 @@ def split_protocol_dns_query(url_address):
         protocol[1]=query[0]
         protocol.append(query[1]+query[2])
         new_url=ganrate_random_short_url(protocol[1])
-        return (protocol[0]+new_url,protocol[2])
-        # ( 'https://github.com' , '?dfljlsdf')
+        return (protocol[0]+new_url,protocol[2],query[0])
+        # ( 'https://github.com' , '?dfljlsdf', 'https://new_url)
     else:
         new_url=ganrate_random_short_url(protocol[1])
-        return protocol[0]+new_url
+        return (protocol[0]+new_url,None,query[0])
 
 def ganrate_random_short_url(value):
     valid_url_characters='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&+,-./=@_|~'
     n=math.ceil(math.log10(len(value)))
     print(n)
     return (''.join(random.SystemRandom().choice(valid_url_characters) for _ in range(n)))
-sourse_urls=['https://www.w3schools.com/python/python_mongodb_create_db.asp',
-                 'https://www.google.co.il/?gws_rd=ssl',
-                 'https://docs.mongodb.com/manual/tutorial/update-documents/',
-                 'https://www.google.com/search?q=cloud.mongodb%20add%20new%20database'
-                 ]
-for i in sourse_urls:
-    print(split_protocol_dns_query(i))
-print(split_protocol_dns_query('https://stackoverflow.com/questions/22f57441/random-string-generation-with-upper-case-letters-and-digits/23728630#23728630dsf'))
-#ganrate_random_short_url('https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits/23728630#23728630')
+
+if __name__=='__main__':
+    sourse_urls=['https://www.w3schools.com/python/python_mongodb_create_db.asp',
+                     'https://www.google.co.il/?gws_rd=ssl',
+                     'https://docs.mongodb.com/manual/tutorial/update-documents/',
+                     'https://www.google.com/search?q=cloud.mongodb%20add%20new%20database'
+                     ]
+    for i in sourse_urls:
+        print(split_call_ganrate_url(i))
+    print(split_call_ganrate_url('https://stackoverflow.com/questions/22f57441/random-string-generation-with-upper-case-letters-and-digits/23728630#23728630dsf'))
+    #ganrate_random_short_url('https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits/23728630#23728630')
