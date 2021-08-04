@@ -4,7 +4,11 @@ import numpy as np
 import re
 import string
 import pyperclip
-
+import traceback
+import short_url
+import test_urlove
+import validate_utilities
+import db_connect
 
 
 
@@ -64,9 +68,10 @@ def screem_printed():
                 print('enter to url link by database')
             #print(values[0])
         except Exception as e:
-            #tb = traceback.format_exc()
-            sg.Print(f'An error happened.  Here is the info:', e)#, tb
-            sg.popup_error(f'AN EXCEPTION OCCURRED!', e)#, tb
+            #sg.Popup('Not a number')
+            tb = traceback.format_exc()
+            sg.Print(f'An error happened.  Here is the info:', e, tb)#
+            sg.popup_error(f'AN EXCEPTION OCCURRED!', e, tb)#
     window.close()
 screem_printed()
 
