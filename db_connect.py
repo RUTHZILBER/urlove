@@ -4,7 +4,6 @@ from random import randint
 from pprint import pprint
 from short_url import *
 
-
 def search_url(db,address='https://google.com'):
     found_url=db.translate.find_one({'source_url':address},{'exchanged_url':1,'_id':0})
     #check the value, False if not there...
@@ -12,21 +11,40 @@ def search_url(db,address='https://google.com'):
         return None
     else:
         return found_url
-def get_address(address='https://google.com'):
+
+def get_address(address='https://google.com?dfd'):
     db=connect_to_db()
     short_url=search_url(db,address)
+    tuple=split_to_parameters(address)
+    query=tuple[0]
+    protocol=tuple[1]
+    # query is: ('github.com', ''/'?',''/'dfdsfdsf') , and protocol is : ['https://','github.com/racehli?87']
+    new_url=protocol[0]
+    new_url_with_parametrs=''
+    past_url=protocol[0]+str(query[0])
+
     if short_url==None:
-        url_struct = split_call_ganrate_url(address)  # (new, parameters, past_address without parameters)
-        insert_to_db(db, url_struct[2], url_struct[0])
-        if url_struct[1] != None:
-            return str(url_struct[0] + url_struct[1])
+        random_part=query[0]
+        random_part=ganrate_random_short_url(random_part)
+
+        if query[1]=='?':
+            new_url=protocol[0]+random_part
+            new_url_with_parametrs=new_url+'?'+str(query[2])
         else:
-            return url_struct[0]
+            new_url=new_url_with_parametrs=protocol[0]+random_part
+        insert_to_db(db,past_url,new_url)
+
+
     else:
-        return short_url+'?sdflkl'
+        short_url=short_url['exchanged_url']
+        if query[1]=='?':
+            new_url_with_parametrs=short_url
+        else:
+           new_url_with_parametrs=short_url+'?'+str(query[2])
+    return new_url_with_parametrs
 
 def insert_to_db(db, sourse_urls, exchanged_urls, table_name='translate'):
-    for i in range(4):
+    for i in range(len(sourse_urls)):
         address = {
             'source_url': sourse_urls[i],
             'exchanged_url': exchanged_urls[i]
@@ -38,6 +56,8 @@ def insert_to_db(db, sourse_urls, exchanged_urls, table_name='translate'):
 
         # result=db.translate.insert_one(address)
         # print(result.inserted_id)
+
+#################################### 'mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 def connect_to_db(mongodb_str_access='mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'):
     link=mongodb_str_access
 # link = 'mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/DBCLUSTER?retryWrites=true&w=majority'
@@ -50,7 +70,6 @@ def connect_to_db(mongodb_str_access='mongodb+srv://r0548593223:0548593223@dbclu
     db = client.business
     print('right')
     return db
-
 
 if __name__=='__main__':
     db=connect_to_db()
@@ -69,7 +88,8 @@ if __name__=='__main__':
         'https://Q/?q=cloud.mongodb%20add%20new%20database'
     ]
     table_name='translate'
-    insert_to_db(db, table_name, sourse_urls, exchanged_urls)
+    #x=search_url(db,'https://www.google.com/search?q=cloud.mongodb%20add%20new%20database')
+    print(search_url(db,'https://www.w3schools.com/python/python_mongodb_create_db.asp'))
 #fivestarcount = db.reviews.find({'rating': 5}).count()
 #print(fivestarcount)
 # # Step 2: Create sample data
