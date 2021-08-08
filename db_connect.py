@@ -43,19 +43,14 @@ def get_address(address='https://google.com?dfd'):
            new_url_with_parametrs=short_url+'?'+str(query[2])
     return new_url_with_parametrs
 
-def insert_to_db(db, sourse_urls, exchanged_urls, table_name='translate'):
-    for i in range(len(sourse_urls)):
+def insert_to_db(db, sourse_url, exchanged_url, table_name='translate'):
+    if 1==1:
         address = {
-            'source_url': sourse_urls[i],
-            'exchanged_url': exchanged_urls[i]
+            'source_url': sourse_url,
+            'exchanged_url': exchanged_url
         }
         command = str('db.' + table_name + '.insert_one(address)')
         exec(command)
-        result = db.translate.find({'sourse_url': 'https://sdff'})
-        print(result)
-
-        # result=db.translate.insert_one(address)
-        # print(result.inserted_id)
 
 #################################### 'mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 def connect_to_db(mongodb_str_access='mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'):

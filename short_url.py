@@ -2,7 +2,6 @@ import string
 import math
 import random
 import re
-import re
 
 def split_to_parameters(url_address):
     protocol = re.split('://', url_address, 1)
@@ -30,4 +29,3 @@ if __name__=='__main__':
                      'https://docs.mongodb.com/manual/tutorial/update-documents/',
                      'https://www.google.com/search?q=cloud.mongodb%20add%20new%20database'
                      ]
-#anrate_random_short_url('https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits/23728630#23728630')

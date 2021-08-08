@@ -31,10 +31,8 @@ def screem_printed():
     layout=[
         [sg.Text('Enter a long URL to make a TinyURL'),sg.InputText(key='long_url')],
         [sg.Button('Make Tiny Url',key='make_tiny'),sg.Button(key='short_url')],
-        [sg.Button('COPY URL 🥝',key='copy_url')],
+        [sg.Button(' 🥝 COPY URL 🥝 ',key='copy_url')],
         [sg.Button('Cancel')]
-
-
     ]
     #title="", layout=[[]] ,size=(700,600), margins=(100, 100),
     sg.theme('BrightColors')
@@ -42,14 +40,13 @@ def screem_printed():
     short_url_text=window['short_url']
     while True:
         try:
-
             error_unvalid_url_text='❌❌❌❌ 🈹 press validate url! ❌❌❌ 🎈🧨🧨🧨🧨'
             event, values = window.read()
             if event==sg.WIN_CLOSED or event=='Cancel':
                 break
             #shortening_url(values[0])
             short_url_present=window['short_url'].get_text()
-            long_url=window['long_url'].get_text()
+            long_url=values['long_url']
             if event=='copy_url' and short_url_present!='' and short_url_present!=error_unvalid_url_text: # control c
                 print()
                 pyperclip.copy(short_url_present)
@@ -57,7 +54,7 @@ def screem_printed():
 
             if event=='make_tiny': # make tinny url
                 new_url=''
-                if is_valid_url(short_url_present)==False:
+                if is_valid_url(long_url)==False:
                     print('mistake in pressing url')
                     new_url=error_unvalid_url_text
                 else:
