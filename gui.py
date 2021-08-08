@@ -11,6 +11,13 @@ from db_connect import *
 from validate_utilities import is_valid_url
 from db_connect import *
 
+# this project shortens url address, and it is available :
+# shorten
+# remember last short urls
+# copy it
+# go to browser with the new url...
+# enjoy use this website!!! 💌
+
 def split_to_parameters(url_address):
     protocol = re.split('://', url_address, 1)
     protocol[0] = protocol[0] + '://'
