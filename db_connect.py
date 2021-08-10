@@ -12,9 +12,7 @@ def search_url(db,address='https://google.com'):
     else:
         return found_url
 
-def get_address(address='https://google.com?dfd'):
-    db=connect_to_db()
-
+def get_address(db,address='https://google.com?dfd'):
     tuple=split_to_parameters(address)
     query = tuple[0]
     protocol = tuple[1]
@@ -53,7 +51,7 @@ def insert_to_db(db, sourse_url, exchanged_url, table_name='translate'):
         exec(command)
 
 #################################### 'mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
-def connect_to_db(mongodb_str_access='mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'):
+def connect_to_db(window,mongodb_str_access='mongodb+srv://r0548593223:0548593223@dbcluster.d4y5f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'):
     link=mongodb_str_access
     ca = certifi.where()
     client = MongoClient(link, tlsCAFile=ca)
@@ -61,13 +59,13 @@ def connect_to_db(mongodb_str_access='mongodb+srv://r0548593223:0548593223@dbclu
     my_db_status=db.command("serverStatus")
     #pprint(my_db_status)
     db = client.business
-    print('right')
+    #print('right')
     return db
 
 if __name__=='__main__':
     db=connect_to_db()
     a=get_address('https://git.com?43')
-    print(a)
+    #print(a)
     #the db will storage these data:
     #       the data base name: urlovedb, table name: translate => _id, sourse_url, exchanged_url,
 

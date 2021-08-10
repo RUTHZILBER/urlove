@@ -11,6 +11,12 @@ from db_connect import *
 from validate_utilities import is_valid_url
 from db_connect import *
 
+class Main:
+    def __init__(self):
+        pass
+    def run(self):
+        screem_printed()
+
 # this project shortens url address, and it is available :
 # shorten
 # remember last short urls
@@ -18,20 +24,50 @@ from db_connect import *
 # go to browser with the new url...
 # enjoy use this website!!! 💌
 
-def split_to_parameters(url_address):
-    protocol = re.split('://', url_address, 1)
-    protocol[0] = protocol[0] + '://'
-    # protocol is : ['https://','github.com/racehli?87']
-    query = protocol[1].rpartition('?')
-    # query is : ('github.com/racheli','?','87')
-    # or : ('','','github.com')
-    return (query,protocol)
+def main():
+    maini=Main()
+    maini.run()
 
-def url_generator(size=6, chars=string.ascii_lowercase + string.digits):
-      return ''.join(random.choice(chars) for _ in range(size))
+def check_actions(window,db,sg,layout):
+    try:
+        error_unvalid_url_text='❌❌❌❌ 🈹 press validate url! ❌❌❌ 🎈🧨🧨🧨🧨'
+        event, values = window.read()
+        if event==sg.WIN_CLOSED or event=='Cancel':
+            return -1
+        #shortening_url(values[0])
+        short_url_present=window['short_url'].get_text()
+        long_url=values['long_url']
+        if event=='copy_url' and short_url_present!='' and short_url_present!=error_unvalid_url_text: # control c
+            print()
+            pyperclip.copy(short_url_present)
+            spam = pyperclip.paste()
 
+        if event=='make_tiny': # make tinny url
+            new_url=''
+            if is_valid_url(long_url)==False:
+                print('mistake in pressing url')
+                new_url=error_unvalid_url_text
+            else:
+                new_url=get_address(db,long_url)
+            window.Element('short_url').Update(new_url)
 
-#if __name__=="__main__":
+        if event=='short_url' and short_url_present!='' and short_url_present!=error_unvalid_url_text: #ganrate url
+            if is_valid_url(short_url_present)==False:
+                print('mistake in pressing url')
+            else:
+                url=get_address(short_url_present)
+                webbrowser.open(url)
+
+        #print(values[0])
+
+        return 1
+    except Exception as e:
+        #sg.Popup('Not a number')
+        tb = traceback.format_exc()
+        sg.Print(f'An error happened.  Here is the info:', e, tb)#
+        sg.popup_error(f'AN EXCEPTION OCCURRED!', e, tb)
+        return -1
+
 def screem_printed():
     print('welcome')
     #,state='disabled'
@@ -45,43 +81,57 @@ def screem_printed():
     sg.theme('BrightColors')
     window=sg.Window('🎻 URLOVE ❤',layout)
     short_url_text=window['short_url']
+    db=connect_to_db(window)
     while True:
-        try:
-            error_unvalid_url_text='❌❌❌❌ 🈹 press validate url! ❌❌❌ 🎈🧨🧨🧨🧨'
-            event, values = window.read()
-            if event==sg.WIN_CLOSED or event=='Cancel':
-                break
-            #shortening_url(values[0])
-            short_url_present=window['short_url'].get_text()
-            long_url=values['long_url']
-            if event=='copy_url' and short_url_present!='' and short_url_present!=error_unvalid_url_text: # control c
-                print()
-                pyperclip.copy(short_url_present)
-                spam = pyperclip.paste()
+        status = check_actions(window, db, sg, layout)
+        if status == -1:
+            break
 
-            if event=='make_tiny': # make tinny url
-                new_url=''
-                if is_valid_url(long_url)==False:
-                    print('mistake in pressing url')
-                    new_url=error_unvalid_url_text
-                else:
-                    new_url=get_address(long_url)
-                window.Element('short_url').Update(new_url)
+    # while True:
+    #     try:
+    #         error_unvalid_url_text='❌❌❌❌ 🈹 press validate url! ❌❌❌ 🎈🧨🧨🧨🧨'
+    #         event, values = window.read()
+    #         if event==sg.WIN_CLOSED or event=='Cancel':
+    #             break
+    #             #return -1
+    #         #shortening_url(values[0])
+    #         short_url_present=window['short_url'].get_text()
+    #         long_url=values['long_url']
+    #         if event=='copy_url' and short_url_present!='' and short_url_present!=error_unvalid_url_text: # control c
+    #             print()
+    #             pyperclip.copy(short_url_present)
+    #             spam = pyperclip.paste()
+    #
+    #         if event=='make_tiny': # make tinny url
+    #             new_url=''
+    #             if is_valid_url(long_url)==False:
+    #                 print('mistake in pressing url')
+    #                 new_url=error_unvalid_url_text
+    #             else:
+    #                 new_url=get_address(db,long_url)
+    #             window.Element('short_url').Update(new_url)
+    #
+    #         if event=='short_url' and short_url_present!='' and short_url_present!=error_unvalid_url_text: #ganrate url
+    #             if is_valid_url(short_url_present)==False:
+    #                 print('mistake in pressing url')
+    #             else:
+    #                 url=get_address(short_url_present)
+    #                 webbrowser.open(url)
+    #
+    #         #print(values[0])
+    #
+    #         #return 1
+    #     except Exception as e:
+    #         #sg.Popup('Not a number')
+    #         tb = traceback.format_exc()
+    #         sg.Print(f'An error happened.  Here is the info:', e, tb)#
+    #         sg.popup_error(f'AN EXCEPTION OCCURRED!', e, tb)
+    #         #return -1
 
-            if event=='short_url' and short_url_present!='' and short_url_present!=error_unvalid_url_text: #ganrate url
-                if is_valid_url(short_url_present)==False:
-                    print('mistake in pressing url')
-                else:
-                    url=get_address(short_url_present)
-                    webbrowser.open(url)
-
-            #print(values[0])
-
-        except Exception as e:
-            #sg.Popup('Not a number')
-            tb = traceback.format_exc()
-            sg.Print(f'An error happened.  Here is the info:', e, tb)#
-            sg.popup_error(f'AN EXCEPTION OCCURRED!', e, tb)#
     window.close()
-screem_printed()
+
+if __name__=='__main__':
+    pass
+    #main()
+
 

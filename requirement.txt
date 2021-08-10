@@ -1,0 +1,14 @@
+pymongo
+certifi
+pprint
+randint
+random
+PySimpleGUI
+numpy
+re
+string
+pyperclip
+traceback
+webbrowser
+math
+unittest

@@ -9,7 +9,6 @@ def split_to_parameters(url_address):
     # protocol is : ['https://','github.com/racehli?87']
     query = protocol[1].rpartition('?')
     # query is : ('github.com/racheli','?','87')
-
     # or : ('','','github.com')
     if query[0]=='' and query[1]=='':
         query=(query[2],query[0],query[1])
